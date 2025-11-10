@@ -1,0 +1,239 @@
+" vimrc -- Init file for Vim
+"
+" This is yet another rewrite of my vimrc.  This time, I'm using tpope's
+" sensible.vim as a starting template, and adding my own configs from there.
+"
+" Author: Peter Frangatzis <https://github.com/pFragga>
+" Last Change: 2025 Nov 06
+
+" Modified sensible.vim {{{
+
+if &compatible
+  finish
+endif
+
+" This is already off by default on most distributions
+"set nocompatible
+
+" Backspace through anything (default is usually good)
+"set backspace=indent,eol,start
+
+set smarttab
+set nrformats-=octal
+
+" Make the escape key more responsive by decreasing the wait time for an
+" escape sequence (e.g., arrow keys)
+if !has('nvim') &&  &ttimeoutlen == -1
+  set ttimeout
+  set ttimeoutlen=100
+endif
+
+" Enable incremental search
+if has('reltime')
+  set incsearch
+endif
+
+" Use CTRL-L to clear the highlighting of 'hlsearch' (off by default) and call
+" :diffupdate
+nnoremap <silent> <C-L>
+      \ :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
+
+set laststatus=2
+set ruler
+set wildmenu
+set scrolloff=1
+set sidescroll=1
+set sidescrolloff=2
+set display+=lastline
+if has('patch-7.4.2109')
+  set display+=truncate
+endif
+set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
+
+" Delete comment character when joining commented lines
+if v:version > 703 || v:version == 703 && has('patch541')
+  set formatoptions+=j
+endif
+
+set autoread
+set history=1000
+
+" Persist g:UPPERCASE variables, used by some plugins, in .viminfo
+if !empty(&viminfo)
+  set viminfo^=!
+endif
+
+" Saving options in session and view files causes more problems that it solves,
+" so disable it
+set sessionoptions-=options
+set viewoptions-=options
+
+" Allow colorschemes to do bright colors without forcing bold
+if &t_Co == 8 && $TERM !~# '^Eterm'
+  set t_Co=16
+endif
+
+" Disable legacy behavior that can break plugin maps
+if has('langmap') && exists('+langremap') && &langremap
+  set nolangremap
+endif
+
+if !(exists('g:did_load_filetypes') && exists('g:did_load_ftplugin')
+      \ && exists('g:did_indent_on'))
+  filetype plugin indent on
+endif
+if has('syntax') && !exists('g:syntax_on')
+  syntax enable
+endif
+
+if empty(mapcheck('<C-U>', 'i'))
+  inoremap <C-U> <C-G>u<C-U>
+endif
+if empty(mapcheck('<C-W>', 'i'))
+  inoremap <C-W> <C-G>u<C-W>
+endif
+
+" From ':help :DiffOrig'
+if exists(":DiffOrig") != 2
+  command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_
+        \ | diffthis | wincmd p | diffthis
+endif
+
+" Correctly highlight $() and other modern affordances in filetype=sh
+if !exists('g:is_posix') && !exists('g:is_bash') && !exists('g:is_kornshell')
+      \ && !exists('g:is_dash')
+  let g:is_posix = 1
+endif
+
+" Load matchit.vim plugin
+if !exists('g:loaded_matchit')
+  runtime! macros/matchit.vim
+endif
+
+" Load the :Man command shipped inside Vim's man filetype plugin
+if exists(':Man') != 2 && !exists('g:loaded:man') && &filetype !=? 'man'
+      \ && !has('nvim')
+  runtime ftplugin/man.vim
+endif
+
+" }}}
+
+" My options {{{
+
+set textwidth=80
+if has('syntax') && exists('g:syntax_on')
+  set colorcolumn=+1
+endif
+
+if has('extra_search') && (&t_Co > 2 || has('gui_running'))
+  set hlsearch
+endif
+
+if has('persistent_undo')
+  set undofile
+  set undodir^=~/.cache/vim/undo//
+endif
+set directory^=~/.cache/vim/swap//
+
+set hidden
+
+set list
+nnoremap <silent> <Leader>ls :set list!<CR>
+
+if has('folding')
+  " Folding follows the syntax highlighting
+  "if exists('g:syntax_on')
+  "  set foldmethod=syntax
+  "endif
+
+  " Start with folds disabled; they can be toggled with the `zi` command
+  set nofoldenable
+
+  let g:html_syntax_folding=1
+  let g:markdown_folding=1
+  let g:sh_fold_enable=3
+  let g:xml_syntax_folding=1
+
+  let c_no_comment_fold=1
+endif
+
+" The `find` command searches recursively down from pwd
+set path+=**
+
+set shiftround
+
+" Searching is case-sensitive, except when using capital letters
+set ignorecase
+set smartcase
+
+set visualbell
+
+" Enable English and Greek spell checking
+if has('spell')
+  set spelllang=en,el
+  nnoremap <silent> <Leader>sp :set spell!<CR>
+
+  autocmd Filetype markdown :setlocal spell
+endif
+
+if has('keymap')
+  nnoremap <Leader><Leader> :set keymap=greek_utf-8<CR>
+endif
+
+command W w
+command Q q
+
+" Some distributions (specifically Debian) ship with modeline disabled by
+" default.  The Vim seems to disable it only for root and specific filetypes
+" (e.g., mail).
+"set modeline
+
+" Disable matchparen plugin; the highlighting confuses me
+let loaded_matchparen = 1
+
+autocmd BufWritePost *Xresources,*Xdefaults
+      \ :!command -v xrdb > /dev/null && xrdb -merge %
+autocmd FileType html,css,javascript,json,xml,vim
+      \ :setlocal expandtab tabstop=2 softtabstop=2 shiftwidth=2
+
+autocmd BufNewFile,BufRead todo.txt :setlocal textwidth&
+autocmd BufWritePre todo.txt :%!sort
+
+nnoremap <silent> <Leader>d :r !date "+\%F"<CR>
+nnoremap <silent> <Leader>D :r !date "+\%Y \%b \%d"<CR>
+nnoremap <silent> <Leader>t :r !date "+\%T"<CR>
+
+set suffixes+=.old,.class,.jar
+
+set statusline=%<%f\ %h%m%r\ [%{&ff}]
+set statusline+=\ %{FugitiveStatusline()}
+set statusline+=%=%k\ [%B]\ %-14.(%l,%c%V%)\ %P
+
+if has('termguicolors') && &t_Co >= 256
+  set termguicolors
+endif
+
+" }}}
+
+" Change the behavior of filetype plugins {{{
+
+let g:maplocalleader=' '
+
+let c_curly_error=1
+let c_function_pointers=1
+let c_functions=1
+let c_space_errors=1
+let c_syntax_for_h=1
+
+let g:nroff_is_groff=1
+let g:nroff_space_errors=1
+let g:preprocs_as_sections=1
+
+let java_highlight_debug=1
+let java_highlight_java_io=1
+let java_highlight_java_lang_ids=1
+let java_mark_braces_in_parens_as_errors=1
+
+" }}}
+
+" vim: fdm=marker

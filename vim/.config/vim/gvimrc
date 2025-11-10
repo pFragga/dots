@@ -1,0 +1,2 @@
+" Kill gui popup dialogs
+set guioptions+=c
