@@ -4,7 +4,7 @@
 " sensible.vim as a starting template, and adding my own configs from there.
 "
 " Author: Peter Frangatzis <https://github.com/pFragga>
-" Last Change: 2025 Nov 06
+" Last Change: 2025 Nov 10
 
 " Modified sensible.vim {{{
 
@@ -84,6 +84,9 @@ if !(exists('g:did_load_filetypes') && exists('g:did_load_ftplugin')
 endif
 if has('syntax') && !exists('g:syntax_on')
   syntax enable
+
+  set background=light
+  colorscheme PaperColor
 endif
 
 if empty(mapcheck('<C-U>', 'i'))
@@ -209,7 +212,7 @@ set statusline=%<%f\ %h%m%r\ [%{&ff}]
 set statusline+=\ %{FugitiveStatusline()}
 set statusline+=%=%k\ [%B]\ %-14.(%l,%c%V%)\ %P
 
-if has('termguicolors') && &t_Co >= 256
+if ($COLORTERM == 'truecolor') || (has('termguicolors') && &t_Co >= 256)
   set termguicolors
 endif
 
