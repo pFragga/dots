@@ -1,0 +1,4 @@
+vim/.config/vim/pack
+vim/.config/vim/.netrwhist
+vim/.config/vim/spell/*
+!vim/.config/vim/spell/Makefile
