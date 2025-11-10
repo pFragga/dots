@@ -1,0 +1,4 @@
+# vim ft=sh
+
+export BROWSER=firefox
+export ICEAUTHORITY="${XDG_CACHE_HOME:~/.cache}"/ICEauthority
