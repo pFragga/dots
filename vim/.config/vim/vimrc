@@ -194,6 +194,8 @@ command Q q
 " Disable matchparen plugin; the highlighting confuses me
 let loaded_matchparen = 1
 
+autocmd BufWritePost *Xmodmap
+      \ :!command -v xmodmap > /dev/null && xmodmap %
 autocmd BufWritePost *Xresources,*Xdefaults
       \ :!command -v xrdb > /dev/null && xrdb -merge %
 autocmd FileType html,css,javascript,json,xml,vim
