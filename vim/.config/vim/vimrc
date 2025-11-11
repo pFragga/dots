@@ -84,9 +84,6 @@ if !(exists('g:did_load_filetypes') && exists('g:did_load_ftplugin')
 endif
 if has('syntax') && !exists('g:syntax_on')
   syntax enable
-
-  set background=light
-  colorscheme PaperColor
 endif
 
 if empty(mapcheck('<C-U>', 'i'))
@@ -218,6 +215,8 @@ if ($COLORTERM == 'truecolor') || (has('termguicolors') && &t_Co >= 256)
   set termguicolors
 endif
 
+set background=light
+colorscheme PaperColor
 " }}}
 
 " Change the behavior of filetype plugins {{{
