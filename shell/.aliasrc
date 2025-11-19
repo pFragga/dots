@@ -33,7 +33,7 @@ unset -v use_strict_posix
 alias gs='git status'
 alias open='xdg-open'
 
-alias wget="wget --hsts-file=\${XDG_DATA_HOME:~/.local/share}/wget-hsts"
+alias wget="wget --hsts-file=\${XDG_DATA_HOME:-~/.local/share}/wget-hsts"
 
 alias mv='mv -i'
 alias rm='rm -i'

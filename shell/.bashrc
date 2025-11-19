@@ -14,9 +14,11 @@ tempdir() { cd "$(mktemp -d)"; }
 
 [ -f ~/.aliasrc ] && . ~/.aliasrc
 
-eval "$(grep ^ANSI_COLOR /etc/os-release)"
-PROMPT_COL="\e[${ANSI_COLOR:-0}m"
-PROMPT_RES="\e[0m"
+# Some distros define an ANSI_COLOR variable in their /etc/os-release.  Color
+# my prompt with it, if possible.
+eval "$(grep ANSI_COLOR /etc/os-release)"
+OS_COL="\e[${ANSI_COLOR:-0}m"
+RES_COL="\e[0m"
 if [ -r ~/.local/lib/git-prompt.sh ]; then
 	. ~/.local/lib/git-prompt.sh
 
@@ -26,9 +28,9 @@ if [ -r ~/.local/lib/git-prompt.sh ]; then
 	GIT_PS1_SHOWCOLORHINTS=y
 
 	# For a slightly faster prompt, use PROMPT_COMMAND, instead of PS1
-	PROMPT_COMMAND='__git_ps1 "\[$PROMPT_COL\][\u@\h \w\[$PROMPT_RES\]" "\[$PROMPT_COL\]]\\$\[$PROMPT_RES\] "'
+	PROMPT_COMMAND='__git_ps1 "\[$OS_COL\]\h" "\[$OS_COL\]\\\$\[$RES_COL\] "'
 else
-	PS1='\[$PROMPT_COL\][\u@\h \w]\$\[$PROMPT_RES\] '
+	PS1="\[$OS_COL\]\h\$\[$RES_COL\] "
 fi
 CDPATH=~/Documents
 PROMPT_DIRTRIM=2
