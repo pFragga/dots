@@ -17,8 +17,13 @@ tempdir() { cd "$(mktemp -d)"; }
 # Some distros define an ANSI_COLOR variable in their /etc/os-release.  Color
 # my prompt with it, if possible.
 eval "$(grep ANSI_COLOR /etc/os-release)"
-OS_COL="\e[${ANSI_COLOR:-0}m"
-RES_COL="\e[0m"
+
+# Otherwise, randomly choose a bright color (90, 91, ..., 97) for the prompt
+if [ -z "$ANSI_COLOR" ]; then
+	ANSI_COLOR=$((90 + $RANDOM % 8))
+fi
+
+# Add git(1) branch information to the prompt, whenever in a git directory
 if [ -r ~/.local/lib/git-prompt.sh ]; then
 	. ~/.local/lib/git-prompt.sh
 
@@ -28,9 +33,9 @@ if [ -r ~/.local/lib/git-prompt.sh ]; then
 	GIT_PS1_SHOWCOLORHINTS=y
 
 	# For a slightly faster prompt, use PROMPT_COMMAND, instead of PS1
-	PROMPT_COMMAND='__git_ps1 "\[$OS_COL\]\h" "\[$OS_COL\]\\\$\[$RES_COL\] "'
+	PROMPT_COMMAND='__git_ps1 "\[\e[${ANSI_COLOR}m\]\h" "\[\e[${ANSI_COLOR}m\]\\\$\[\e[0m\] "'
 else
-	PS1="\[$OS_COL\]\h\$\[$RES_COL\] "
+	PS1='\[\e[${ANSI_COLOR}m\]\h\$\[\e[0m\] '
 fi
 CDPATH=~/Documents
 PROMPT_DIRTRIM=2
