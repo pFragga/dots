@@ -37,7 +37,12 @@ if [ -r ~/.local/lib/git-prompt.sh ]; then
 else
 	PS1='\[\e[${ANSI_COLOR}m\]\h\$\[\e[0m\] '
 fi
-CDPATH=~/Documents
+
+# Change into these directories from everywhere
+CDPATH="${XDG_DOCUMENTS_DIR:-$HOME/Documents}"
+
+# When PS1 contains \w, the full path will be truncated to only show the last
+# two parent directories.
 PROMPT_DIRTRIM=2
 
 HISTIGNORE=fg:bg:jobs
