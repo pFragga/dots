@@ -49,6 +49,9 @@ export RUSTICL_ENABLE=radeonsi
 # Uncomment to disable colors in terminal programs that support this variable
 #export NO_COLOR=y
 
+# Limit the output width of the man(1) command
+export MANDWIDTH=80
+
 case $SHELL in
 	*/bash)
 		# Set the init file for interactive shells (posix mode)
