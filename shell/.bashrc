@@ -33,7 +33,7 @@ if [ -r ~/.local/lib/git-prompt.sh ]; then
 	GIT_PS1_SHOWCOLORHINTS=y
 
 	# For a slightly faster prompt, use PROMPT_COMMAND, instead of PS1
-	PROMPT_COMMAND='__git_ps1 "\[\e[${ANSI_COLOR}m\]\h" "\[\e[${ANSI_COLOR}m\]\\\$\[\e[0m\] "'
+	PROMPT_COMMAND='__git_ps1 "\[\e[${ANSI_COLOR}m\]\h\[\e[0m\]" "\[\e[${ANSI_COLOR}m\]\\\$\[\e[0m\] "'
 else
 	PS1='\[\e[${ANSI_COLOR}m\]\h\$\[\e[0m\] '
 fi
