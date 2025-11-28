@@ -1,4 +1,10 @@
 # vim: ft=sh
 
+if grep -q Debian /etc/os-release; then
+	if [ -r ~/.profile ]; then
+		. ~/.profile
+	fi
+fi
+
 export BROWSER=firefox
 export ICEAUTHORITY="${XDG_CACHE_HOME:-~/.cache}"/ICEauthority
