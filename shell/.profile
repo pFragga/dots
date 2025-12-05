@@ -42,10 +42,9 @@ export SQLITE_HISTORY="$XDG_STATE_HOME"/sqlite_history
 export RUSTICL_ENABLE=radeonsi
 
 # Uncomment to force stricter POSIX compliance
-export POSIXLY_CORRECT=y
-export VIM_POSIX=y
-export PS_PERSONALITY=posix
-export LC_COLLATE=C
+#export POSIXLY_CORRECT=y
+#export VIM_POSIX=y
+#export PS_PERSONALITY=posix
 
 # Uncomment to disable colors in terminal programs that support this variable
 #export NO_COLOR=y
