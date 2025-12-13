@@ -48,7 +48,7 @@ set display+=lastline
 if has('patch-7.4.2109')
   set display+=truncate
 endif
-set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
+set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+,eol:¶
 
 " Delete comment character when joining commented lines
 if v:version > 703 || v:version == 703 && has('patch541')
