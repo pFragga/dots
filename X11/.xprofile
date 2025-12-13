@@ -1,6 +1,6 @@
 # vim: ft=sh
 
-if grep -q Debian /etc/os-release; then
+if [ -f /etc/debian_version ]; then
 	if [ -r ~/.profile ]; then
 		. ~/.profile
 	fi
