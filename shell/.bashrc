@@ -58,8 +58,8 @@ shopt -s histappend
 stty -ixon
 
 # Fancy colors for ls(1)
-if [ -z "$LS_COLORS" ] && command -v dircolors > /dev/null; then
-	if [ -f ~/.dir_colors ]; then
+if command -v dircolors > /dev/null; then
+	if [ -r ~/.dir_colors ]; then
 		eval "$(dircolors -b ~/.dir_colors)"
 	else
 		eval "$(dircolors -b)"

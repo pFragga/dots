@@ -192,20 +192,7 @@ EXEC 01;32
 .ra 00;36
 .wav 00;36
 .m4a 00;36
-# important (bold white)
-*todo.txt 01;38
-.md 01;38
-.markdown 01;38
-*README 01;38
-*TODO 01;38
-.mk 01;38
-*Makefile 01;38
-*GNUmakefile 01;38
-*rc 01;38
-.conf 01;38
-.cfg 01;38
-.ini 01;38
-# less important (gray)
+# backup and cache files (gray)
 .aux 00;90
 .bak 00;90
 .bkp 00;90
