@@ -1,0 +1,2 @@
+# The files in xorg.conf.d should be manually copied into /etc/X11/xorg.conf.d
+xorg.conf.d
