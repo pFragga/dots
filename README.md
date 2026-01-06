@@ -2,7 +2,7 @@
 
 Dotfiles!
 
-I use (GNU) stow/xstow to symlink them into their destination directories.
+I use GNU stow/xstow to symlink them into their destination directories.
 
 	$ cd dots
 	$ stow -v <dir>
