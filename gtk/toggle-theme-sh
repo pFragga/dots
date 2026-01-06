@@ -1,0 +1,38 @@
+#!/bin/sh
+#
+# Toggles the gtk theme preference (light/dark) based on the time of day.
+#
+# A light theme is preferred during daytime and a dark one during nighttime.
+
+t=$(date '+%H:%M')                     # timestamp to avoid multiple date(1) calls
+h=$(echo "$t" | cut -d':' -f1)         # hours
+m=$(echo "$t" | cut -d':' -f2)         # minutes
+nt_h=17                                # nighttime hour
+nt_m=20                                # nighttime minutes
+dt_h=7                                 # daytime hour
+dt_m=41                                # daytime minutes
+f="$HOME/.config/gtk-3.0/settings.ini"
+
+# bail out, if there's no config file
+[ -f "$f" ] || return
+
+if grep -m1 '^gtk-application-prefer-dark-theme' < "$f" | grep -q 'true'; then
+
+	if ([ "$h" -ge "$dt_h" ] && [ "$m" -ge "$dt_m" ]) || ([ "$h" -lt "$nt_h" ] && [ "$m" -lt "$nt_m" ]); then
+
+		# not using `sed -i` for portability
+		sed '/^gtk-application-prefer-dark-theme/s/true/false/' < "$f" > "$f.new"
+	fi
+else
+
+	if ([ "$h" -ge "$nt_h" ] && [ "$m" -ge "$nt_m" ]) || ([ "$h" -lt "$dt_h" ] && [ "$m" -lt "$dt_m" ]); then
+
+		# not using `sed -i` for portability
+		sed '/^gtk-application-prefer-dark-theme/s/false/true/' < "$f" > "$f.new"
+	fi
+fi
+
+# if the file was created, replace the old one with the new
+[ -f "$f.new" ] && mv -f "$f.new" "$f"
+
+exit $?
