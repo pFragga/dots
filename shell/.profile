@@ -43,7 +43,6 @@ export RUSTICL_ENABLE=radeonsi
 
 # Uncomment to force stricter POSIX compliance
 #export POSIXLY_CORRECT=y
-#export VIM_POSIX=y
 #export PS_PERSONALITY=posix
 
 # Uncomment to disable colors in terminal programs that support this variable
@@ -54,6 +53,7 @@ export MANWIDTH=80
 
 case $SHELL in
 	*/bash)
+
 		# Set the init file for interactive shells (posix mode)
 		[ -z "$POSIXLY_CORRECT" ] || export ENV=~/.bashrc
 
@@ -63,7 +63,6 @@ case $SHELL in
 		if [ -n "$BASH_VERSION" ]; then
 			[ -f ~/.bashrc ] && . ~/.bashrc
 		fi
-
 		;;
 	*/sh|*/dash)
 		[ -f ~/.aliasrc ] && . ~/.aliasrc # TODO

@@ -10,7 +10,7 @@ mpvyt() { mpv --ytdl --ytdl-format=worst --no-terminal "$1"; }
 yta() { yt-dlp --ignore-errors --extract-audio --format bestaudio/best "$1"; }
 
 # Move to a temporary directory
-tempdir() { cd "$(mktemp -d)"; }
+tempdir() { cd "$(mktemp -d)" || return; }
 
 [ -f ~/.aliasrc ] && . ~/.aliasrc
 

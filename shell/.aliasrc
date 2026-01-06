@@ -1,6 +1,5 @@
 # vim: ft=sh
 
-# Determine whether we want POSIX-like behavior
 use_strict_posix=n
 case $SHELL in
 	*/sh|*/dash) use_strict_posix=y ;;
@@ -12,8 +11,6 @@ if [ "$use_strict_posix" = y ]; then
 	alias ll.='ls -ldF .* 2> /dev/null'
 	alias ll='ls -lF'
 	alias ls='ls -F'
-
-	alias watch='watch -C'
 else
 	alias l.='ls --color=auto -dF .* 2> /dev/null'
 	alias ll.='ls --color=auto -ldF .* 2> /dev/null'
@@ -23,21 +20,27 @@ else
 	alias grep='grep --color=auto'
 	alias zgrep='zgrep --color=auto'
 	alias bzgrep='bzgrep --color=auto'
-
-	alias ip='ip -c'
-
-	alias watch='watch -c'
 fi
 unset -v use_strict_posix
 
-alias gs='git status'
-alias open='xdg-open'
-
-alias wget="wget --hsts-file=\${XDG_DATA_HOME:-~/.local/share}/wget-hsts"
+if command -v git > /dev/null; then
+	alias gs='git status'
+	alias gl='git log'
+fi
+if command -v xdg-open > /dev/null; then
+	alias open='xdg-open'
+fi
+if command -v wget > /dev/null; then
+	alias wget="wget --hsts-file=\${XDG_DATA_HOME:-\$HOME/.local/share}/wget-hsts"
+fi
+if command -v xdg-ninja > /dev/null; then
+	alias xdg-ninja='xdg-ninja | less -R'
+fi
+if command -v doas > /dev/null; then
+	# friendship ended with sudo, now doas is my new friend
+	alias sudo=doas
+fi
 
 alias mv='mv -i'
 alias rm='rm -i'
 alias cp='cp -i'
-
-alias sudo=doas
-alias stow=xstow
