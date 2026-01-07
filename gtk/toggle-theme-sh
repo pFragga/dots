@@ -4,35 +4,76 @@
 #
 # A light theme is preferred during daytime and a dark one during nighttime.
 
-t=$(date '+%H:%M')                     # timestamp to avoid multiple date(1) calls
-h=$(echo "$t" | cut -d':' -f1)         # hours
-m=$(echo "$t" | cut -d':' -f2)         # minutes
-nt_h=17                                # nighttime hour
-nt_m=20                                # nighttime minutes
-dt_h=7                                 # daytime hour
-dt_m=41                                # daytime minutes
-f="$HOME/.config/gtk-3.0/settings.ini"
+set -u
 
-# bail out, if there's no config file
-[ -f "$f" ] || return
+f="${XDG_CONFIG_HOME:-$HOME/.config}/gtk-3.0/settings.ini"
+t=$(date '+%H:%M')             # timestamp to avoid multiple date(1) calls
+h=$(echo "$t" | cut -d':' -f1) # hours
+m=$(echo "$t" | cut -d':' -f2) # minutes
+dt_h=7                         # daytime hours
+dt_m=41                        # daytime minutes
+nt_h=17                        # nighttime hours
+nt_m=20                        # nighttime minutes
 
-if grep -m1 '^gtk-application-prefer-dark-theme' < "$f" | grep -q 'true'; then
-
-	if ([ "$h" -ge "$dt_h" ] && [ "$m" -ge "$dt_m" ]) || ([ "$h" -lt "$nt_h" ] && [ "$m" -lt "$nt_m" ]); then
-
-		# not using `sed -i` for portability
-		sed '/^gtk-application-prefer-dark-theme/s/true/false/' < "$f" > "$f.new"
+# 0 = daytime; 1 = nighttime
+get_tod()
+{
+	if [ "$h" -gt "$dt_h" ] && [ "$h" -lt "$nt_h" ]; then
+		return 0
+	elif [ "$h" -eq "$dt_h" ] && [ "$m" -ge "$dt_m" ]; then
+		return 0
+	elif [ "$h" -eq "$nt_h" ] && [ "$m" -ge "$dt_m" ]; then
+		return 0
 	fi
-else
 
-	if ([ "$h" -ge "$nt_h" ] && [ "$m" -ge "$nt_m" ]) || ([ "$h" -lt "$dt_h" ] && [ "$m" -lt "$dt_m" ]); then
+	if [ "$h" -gt "$nt_h" ]; then
+		return 1
+	elif [ "$h" -lt "$nt_h" ] && [ "$h" -lt "$dt_h" ]; then
+		return 1
+	elif [ "$h" -eq "$nt_h" ] && [ "$m" -ge "$nt_m" ]; then
+		return 1
+	elif [ "$h" -eq "$dt_h" ] && [ "$m" -lt "$dt_m" ]; then
+		return 1
+	fi
 
-		# not using `sed -i` for portability
+	# XXX this part should not be reached
+	return 2
+}
+
+found_pref()
+{
+	# bail out, if there's no config file
+	[ -f "$f" ] || return
+	grep -m1 '^gtk-application-prefer-dark-theme' < "$f" | grep -q 'true'
+}
+
+toggle_theme()
+{
+	# bail out, if there's no config file
+	[ -f "$f" ] || return
+
+	# accept only one argument
+	[ "$#" -eq 1 ] || return
+
+	# 0 = daytime; 1 = nighttime
+	if [ "$1" = 0 ]; then
+		sed '/^gtk-application-prefer-dark-theme/s/true/false/' < "$f" > "$f.new"
+	elif [ "$1" = 1 ]; then
 		sed '/^gtk-application-prefer-dark-theme/s/false/true/' < "$f" > "$f.new"
 	fi
-fi
 
-# if the file was created, replace the old one with the new
-[ -f "$f.new" ] && mv -f "$f.new" "$f"
+	# if the file was created, replace the old one with the new
+	[ -f "$f.new" ] && mv -f "$f.new" "$f"
+}
+
+if get_tod; then
+	if found_pref; then
+		toggle_theme 0 # night → day
+	fi
+else
+	if ! found_pref; then
+		toggle_theme 1 # day → night
+	fi
+fi
 
 exit $?
